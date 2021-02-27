@@ -1,0 +1,7 @@
+apiVersion: logging.opsgy.com/v1beta1
+kind: GlobalLokiRule
+metadata:
+  name: globallokirule-sample
+spec:
+  # Add fields here
+  foo: bar

@@ -1,0 +1,14 @@
+domain: opsgy.com
+layout: go.kubebuilder.io/v3
+projectName: app
+repo: github.com/opsgy/loki-rule-operator
+resources:
+- crdVersion: v1
+  group: logging
+  kind: LokiRule
+  version: v1beta1
+  webhookVersion: v1
+version: 3-alpha
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}

@@ -1,0 +1,7 @@
+apiVersion: logging.opsgy.com/v1beta1
+kind: LokiRule
+metadata:
+  name: lokirule-sample
+spec:
+  # Add fields here
+  foo: bar
