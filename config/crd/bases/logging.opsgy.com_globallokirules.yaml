@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
-  name: lokirules.logging.opsgy.com
+  name: globallokirules.logging.opsgy.com
 spec:
   group: logging.opsgy.com
   names:
-    kind: LokiRule
-    listKind: LokiRuleList
-    plural: lokirules
-    singular: lokirule
-  scope: Namespaced
+    kind: GlobalLokiRule
+    listKind: GlobalLokiRuleList
+    plural: globallokirules
+    singular: globallokirule
+  scope: Cluster
   versions:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: LokiRule is the Schema for the lokirules API
+        description: GlobalLokiRule is the Schema for the globallokirules API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,7 +34,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: LokiRuleSpec defines the desired state of LokiRule
+            description: GlobalLokiRuleSpec defines the desired state of GlobalLokiRule
             properties:
               groups:
                 items:
@@ -66,7 +66,7 @@ spec:
                 type: array
             type: object
           status:
-            description: LokiRuleStatus defines the observed state of LokiRule
+            description: GlobalLokiRuleStatus defines the observed state of GlobalLokiRule
             properties:
               message:
                 type: string

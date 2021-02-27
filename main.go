@@ -56,12 +56,14 @@ func main() {
 	var enableLeaderElection bool
 	var probeAddr string
 	var rulesCM string
+	var enableWebhook bool
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
 	flag.StringVar(&rulesCM, "rules-configmap", "default/loki-rules", "Configmap name to store all the LokiRules, in the format '<namespace>/<name>'")
+	flag.BoolVar(&enableWebhook, "enable-webhook", false, "Enable validation webhook")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -106,6 +108,23 @@ func main() {
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "LokiRule")
 		os.Exit(1)
+	}
+	if err = (&controllers.GlobalLokiRuleReconciler{
+		Client:                  mgr.GetClient(),
+		Log:                     ctrl.Log.WithName("controllers").WithName("GlobalLokiRule"),
+		Scheme:                  mgr.GetScheme(),
+		Clientset:               clientset,
+		RulesConfigMapName:      rulesCMParts[1],
+		RulesConfigMapNamespace: rulesCMParts[0],
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "GlobalLokiRule")
+		os.Exit(1)
+	}
+	if enableWebhook {
+		if err = (&loggingv1beta1.LokiRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "LokiRule")
+			os.Exit(1)
+		}
 	}
 	// +kubebuilder:scaffold:builder
 

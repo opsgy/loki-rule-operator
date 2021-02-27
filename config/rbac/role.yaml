@@ -9,6 +9,32 @@ rules:
 - apiGroups:
   - logging.opsgy.com
   resources:
+  - globallokirules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.opsgy.com
+  resources:
+  - globallokirules/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - logging.opsgy.com
+  resources:
+  - globallokirules/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - logging.opsgy.com
+  resources:
   - lokirules
   verbs:
   - create
