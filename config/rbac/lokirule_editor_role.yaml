@@ -1,0 +1,24 @@
+# permissions for end users to edit lokirules.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: lokirule-editor-role
+rules:
+- apiGroups:
+  - logging.opsgy.com
+  resources:
+  - lokirules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - logging.opsgy.com
+  resources:
+  - lokirules/status
+  verbs:
+  - get

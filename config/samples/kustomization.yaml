@@ -1,0 +1,4 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- logging_v1beta1_lokirule.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
