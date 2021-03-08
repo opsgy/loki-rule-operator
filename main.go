@@ -19,6 +19,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 
@@ -43,6 +44,34 @@ import (
 	// +kubebuilder:scaffold:imports
 )
 
+// Created so that multiple inputs can be accecpted
+type labelFlags []controllers.Label
+
+func (l *labelFlags) String() string {
+	str := ""
+	for i, label := range *l {
+		if i > 0 {
+			str += ","
+		}
+		str += label.Name + "=" + label.Value
+	}
+	// change this, this is just can example to satisfy the interface
+	return str
+}
+
+func (l *labelFlags) Set(value string) error {
+	pair := strings.Split(value, "=")
+	if len(pair) != 2 {
+		return fmt.Errorf("invalid label, should be in the format <key>=<value>")
+	}
+	label := controllers.Label{
+		Name:  strings.TrimSpace(pair[0]),
+		Value: strings.TrimSpace(pair[1]),
+	}
+	*l = append(*l, label)
+	return nil
+}
+
 var (
 	scheme   = runtime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
@@ -61,6 +90,7 @@ func main() {
 	var probeAddr string
 	var rulesCM string
 	var enableWebhook bool
+	var externalLabels labelFlags
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
@@ -68,6 +98,7 @@ func main() {
 			"Enabling this will ensure there is only one active controller manager.")
 	flag.StringVar(&rulesCM, "rules-configmap", "default/loki-rules", "Configmap name to store all the LokiRules, in the format '<namespace>/<name>'")
 	flag.BoolVar(&enableWebhook, "enable-webhook", false, "Enable validation webhook")
+	flag.Var(&externalLabels, "external-label", "Add labels to the alert rules")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -140,6 +171,7 @@ func main() {
 		Clientset:               clientset,
 		RulesConfigMapName:      rulesCMParts[1],
 		RulesConfigMapNamespace: rulesCMParts[0],
+		ExternalLabels:          externalLabels,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "LokiRule")
 		os.Exit(1)
@@ -151,6 +183,7 @@ func main() {
 		Clientset:               clientset,
 		RulesConfigMapName:      rulesCMParts[1],
 		RulesConfigMapNamespace: rulesCMParts[0],
+		ExternalLabels:          externalLabels,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "GlobalLokiRule")
 		os.Exit(1)

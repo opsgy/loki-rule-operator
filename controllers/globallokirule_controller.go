@@ -41,6 +41,7 @@ type GlobalLokiRuleReconciler struct {
 	Clientset               *kubernetes.Clientset
 	RulesConfigMapName      string
 	RulesConfigMapNamespace string
+	ExternalLabels          []Label
 }
 
 // +kubebuilder:rbac:groups=logging.opsgy.com,resources=globallokirules,verbs=get;list;watch;create;update;patch;delete
@@ -111,6 +112,21 @@ func (r *GlobalLokiRuleReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 	lokiRule.Spec = *spec
 
+	// Add external labels
+	if r.ExternalLabels != nil && len(r.ExternalLabels) > 0 {
+		for _, group := range lokiRule.Spec.Groups {
+			for _, rule := range group.Rules {
+				if rule.Labels == nil {
+					rule.Labels = make(map[string]string)
+				}
+				for _, label := range r.ExternalLabels {
+					rule.Labels[label.Name] = label.Value
+				}
+			}
+		}
+	}
+
+	// Marshal rules
 	data, err := yaml.Marshal(&lokiRule.Spec)
 	if err != nil {
 		lokiRule.Status.Message = err.Error()
