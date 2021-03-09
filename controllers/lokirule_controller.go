@@ -127,6 +127,7 @@ func (r *LokiRuleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 				for _, label := range r.ExternalLabels {
 					rule.Labels[label.Name] = label.Value
 				}
+				rule.Labels["group"] = group.Name
 			}
 		}
 	}
