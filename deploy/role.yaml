@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: loki-rule-operator
+  namespace: {{ $LOKI_RULES_CONFIGMAP_NAMESPACE }}
+  labels:
+    app.kubernetes.io/name: loki-rule-operator
+rules:
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["create"]
+- apiGroups: [""]
+  resourceNames:
+  - {{ $LOKI_RULES_CONFIGMAP_NAME }}
+  resources:
+  - configmaps
+  verbs: ["get", "update"]

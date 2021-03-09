@@ -1,0 +1,25 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: loki-rule-operator
+  labels:
+    app.kubernetes.io/name: loki-rule-operator
+  annotations:
+    cert-manager.io/inject-ca-from: kube-system/loki-rule-operator
+webhooks:
+- name: loki-rule.logging.opsgy.com
+  admissionReviewVersions:
+  - v1
+  - v1beta1
+  rules:
+    - operations: ["CREATE","UPDATE"]
+      apiGroups: ["logging.opsgy.com"]
+      apiVersions: ["v1", "v1beta1"]
+      resources: ["lokirules"]
+  clientConfig:
+    service:
+      name: loki-rule-operator
+      namespace: kube-system
+      path: /validate-logging-opsgy-com-v1beta1-lokirule
+      port: 443
+  sideEffects: None

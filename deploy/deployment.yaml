@@ -1,0 +1,90 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki-rule-operator
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: loki-rule-operator
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki-rule-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: loki-rule-operator
+        app.kubernetes.io/version: {{ $TAG }}
+    spec:
+      containers:
+      - name: loki-rule-operator
+        image: eu.gcr.io/opsgy-com/loki-rule-operator:{{ $TAG }}
+        imagePullPolicy: IfNotPresent
+
+        args:
+        - -enable-webhook
+        - -rules-configmap={{ $LOKI_RULES_CONFIGMAP_NAMESPACE }}/{{ $LOKI_RULES_CONFIGMAP_NAME }}
+
+        ports:
+        - name: https
+          containerPort: 9443
+          protocol: TCP
+        - name: metrics
+          containerPort: 8080
+          protocol: TCP
+        - name: health
+          containerPort: 8081
+          protocol: TCP
+
+        # Health checks
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: health
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: health
+          failureThreshold: 20
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+
+        # Resource limits
+        resources:
+          limits:
+            memory: 50Mi
+            cpu: 50m
+          requests:
+            memory: 50Mi
+            cpu: 50m
+
+        securityContext:
+          readOnlyRootFilesystem: true
+
+        volumeMounts:
+        - name: tls-secret
+          mountPath: /tmp/k8s-webhook-server/serving-certs
+
+      securityContext:
+        fsGroup: 2000
+        runAsUser: 100002
+
+      serviceAccount: loki-rule-operator
+
+      volumes:
+      - name: tls-secret
+        secret:
+          secretName: loki-rule-operator

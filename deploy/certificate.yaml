@@ -1,0 +1,16 @@
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: loki-rule-operator
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: loki-rule-operator
+spec:
+  dnsNames:
+  -  loki-rule-operator.kube-system.svc
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: self-signed
+  secretName: loki-rule-operator

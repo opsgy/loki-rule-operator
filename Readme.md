@@ -1,7 +1,5 @@
 # loki-rule-operator
-Kubernetes Operator that adds the `LokiRule` and `GlobalLokiRule` Custom Resource Definitions to a cluster. These resources helps configuring Alert rules for your Loki setup.
-
-The LogQL expressions are evaluated before the rules are applied.
+Loki-rule-operator is light-weight Kubernetes Operator that adds the `LokiRule` and `GlobalLokiRule` Custom Resource Definitions to a cluster. These resources helps configuring [Alert rules](https://grafana.com/docs/loki/latest/alerting/) for your [Loki setup](https://grafana.com/docs/loki/latest/installation/).
 
 ## Example
 ```yaml
@@ -17,19 +15,17 @@ spec:
     - alert: http-credentials-leaked
       annotations:
         message: '{{ $labels.job }} is leaking http basic auth credentials.'
-      expr: sum by (cluster, job, pod) (count_over_time({namespace="prod"} |~ "http(s?)://(\\w+):(\\w+)@"
-        [5m]) > 0)
+      expr: sum by (cluster, job, pod) (count_over_time({namespace="prod"} |~ "http(s?)://(\\w+):(\\w+)@" [5m]) > 0)
       for: 10m
       labels:
         severity: critical
 ```
 
-## Difference between cluster-wide and namespaced
-Namespaced rules will be enforece to have the selector `namespace` set to the namespace where the rule is created in.
+## Difference between `GlobalLokiRule` and `LokiRule`
+`LokiRule` is a namespaced resource and will will enforce the selector `{namespace="<namespace>"}` on the LogQL expression. The `GlobalLokiRule` is cluster wide and doesn't enforce the namespace selector.
 
 ## Setup the loki-rule-operator
-1. Add the crd's from `config/crd/bases`
-2. Deploy the operator, an example can be found in the `deploy` folder
+See the [deploy](./deploy) folder.
 
-## license
-MIT
+## License
+Apache License 2.0, see [LICENSE](LICENSE).
