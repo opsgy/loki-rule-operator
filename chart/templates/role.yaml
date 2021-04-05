@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "loki-rule-operator.fullname" . }}
+  namespace: {{ .Values.lokiConfigmapRulesNamespace }}
+  labels:
+    {{- include "loki-rule-operator.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["create"]
+- apiGroups: [""]
+  resourceNames:
+  - {{ .Values.lokiConfigmapRulesName }}
+  resources:
+  - configmaps
+  verbs: ["get", "update"]

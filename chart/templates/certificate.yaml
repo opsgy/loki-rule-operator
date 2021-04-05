@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "loki-rule-operator.fullname" . }}
+  labels:
+    {{- include "loki-rule-operator.labels" . | nindent 4 }}
+spec:
+  dnsNames:
+  -  {{ include "loki-rule-operator.fullname" . }}.{{ .Release.Namespace }}.svc
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: selfsigned-issuer
+  secretName: {{ include "loki-rule-operator.fullname" . }}
