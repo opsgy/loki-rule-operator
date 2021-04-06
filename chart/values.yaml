@@ -56,6 +56,14 @@ autoscaling:
 
 admissionWebhooks:
   enabled: true
+  annotations:
+    cert-manager.io/inject-apiserver-ca: "true"
+
+certManager:
+  enabled: true
+  group: cert-manager.io
+  kind: ClusterIssuer
+  issuerName: selfsigned
 
 nodeSelector: {}
 

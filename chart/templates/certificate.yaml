@@ -1,3 +1,4 @@
+{{- if .Values.certManager.enabled -}}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -8,7 +9,8 @@ spec:
   dnsNames:
   -  {{ include "loki-rule-operator.fullname" . }}.{{ .Release.Namespace }}.svc
   issuerRef:
-    group: cert-manager.io
-    kind: ClusterIssuer
-    name: selfsigned-issuer
+    group: {{ .Values.certManager.group }}
+    kind: {{ .Values.certManager.kind
+    name: {{ .Values.certManager.issuerName }}
   secretName: {{ include "loki-rule-operator.fullname" . }}
+{{- end }}
