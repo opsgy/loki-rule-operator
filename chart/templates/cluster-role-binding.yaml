@@ -10,5 +10,5 @@ roleRef:
   name: {{ include "loki-rule-operator.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.serviceAccount.name }}
+  name: {{ include "loki-rule-operator.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
