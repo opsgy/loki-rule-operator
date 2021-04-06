@@ -54,6 +54,9 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+admissionWebhooks:
+  enabled: true
+
 nodeSelector: {}
 
 tolerations: []
