@@ -10,7 +10,7 @@ spec:
   -  {{ include "loki-rule-operator.fullname" . }}.{{ .Release.Namespace }}.svc
   issuerRef:
     group: {{ .Values.certManager.group }}
-    kind: {{ .Values.certManager.kind
+    kind: {{ .Values.certManager.kind }}
     name: {{ .Values.certManager.issuerName }}
   secretName: {{ include "loki-rule-operator.fullname" . }}
 {{- end }}

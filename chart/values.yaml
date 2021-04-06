@@ -48,6 +48,8 @@ loki:
   rulesConfigMap:
     name: loki-rules
     namespace: monitoring
+lokiConfigmapRulesNamespace: monitoring
+lokiConfigmapRulesName: loki-rules
 
 autoscaling:
   enabled: false
@@ -58,8 +60,7 @@ autoscaling:
 
 admissionWebhooks:
   enabled: true
-  annotations:
-    cert-manager.io/inject-apiserver-ca: "true"
+  annotations: {}
 
 certManager:
   enabled: true

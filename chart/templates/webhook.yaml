@@ -5,7 +5,7 @@ metadata:
   name: {{ include "loki-rule-operator.fullname" . }}
   labels:
     {{- include "loki-rule-operator.labels" . | nindent 4 }}
-  {{- if .Values.certManager.enabled -}}
+  {{- if .Values.certManager.enabled }}
   annotations:
     cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ include "loki-rule-operator.fullname" . }}
     {{- with .Values.admissionWebhooks.annotations }}
@@ -17,7 +17,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   {{- end }}
-
 webhooks:
 - name: loki-rule.logging.opsgy.com
   admissionReviewVersions:

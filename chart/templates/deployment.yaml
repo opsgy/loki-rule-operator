@@ -39,7 +39,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        {{- if .Values.admissionWebhooks.enabled -}}
+        {{- if .Values.admissionWebhooks.enabled }}
         - -enable-webhook
         {{- end }}
         - -rules-configmap={{ .Values.loki.rulesConfigMap.namespace }}/{{ .Values.loki.rulesConfigMap.name }}
