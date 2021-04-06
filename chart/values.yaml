@@ -44,8 +44,10 @@ resources:
     memory: 50Mi
     cpu: 50m
 
-lokiConfigmapRulesNamespace: monitoring
-lokiConfigmapRulesName: loki-rules
+loki:
+  rulesConfigMap:
+    name: loki-rules
+    namespace: monitoring
 
 autoscaling:
   enabled: false
