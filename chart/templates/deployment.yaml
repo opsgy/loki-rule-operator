@@ -40,7 +40,7 @@ spec:
         {{- if .Values.admissionWebhooks.enabled }}
         - -enable-webhook
         {{- end }}
-        - -rules-configmap={{ .Values.loki.rulesConfigMap.namespace }}/{{ .Values.loki.rulesConfigMap.name }}
+        - -rules-configmap={{ .Values.loki.rulesConfigMap.namespace | default .Release.Namespace }}/{{ .Values.loki.rulesConfigMap.name }}
 
         ports:
         - name: https

@@ -47,9 +47,7 @@ resources:
 loki:
   rulesConfigMap:
     name: loki-rules
-    namespace: monitoring
-lokiConfigmapRulesNamespace: monitoring
-lokiConfigmapRulesName: loki-rules
+    namespace: ""
 
 admissionWebhooks:
   enabled: true
