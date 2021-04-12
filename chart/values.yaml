@@ -1,0 +1,66 @@
+# Default values for loki-rule-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: eu.gcr.io/opsgy-com/loki-rule-operator
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "loki-rule-operator"
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 2000
+  runAsUser: 10000
+
+securityContext:
+  readOnlyRootFilesystem: true
+
+service:
+  type: ClusterIP
+  port: 443
+
+resources:
+  limits:
+    memory: 50Mi
+    cpu: 50m
+  requests:
+    memory: 50Mi
+    cpu: 50m
+
+loki:
+  rulesConfigMap:
+    name: loki-rules
+    namespace: ""
+
+admissionWebhooks:
+  enabled: true
+  annotations: {}
+
+certManager:
+  enabled: true
+  group: cert-manager.io
+  kind: ClusterIssuer
+  issuerName: selfsigned
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
