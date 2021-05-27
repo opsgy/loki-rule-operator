@@ -50,11 +50,11 @@ loki:
     namespace: ""
 
 admissionWebhooks:
-  enabled: true
+  enabled: false
   annotations: {}
 
 certManager:
-  enabled: true
+  enabled: false
   group: cert-manager.io
   kind: ClusterIssuer
   issuerName: selfsigned
