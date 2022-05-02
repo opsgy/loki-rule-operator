@@ -48,6 +48,8 @@ spec:
                         properties:
                           alert:
                             type: string
+                          record:
+                            type: string
                           annotations:
                             additionalProperties:
                               type: string

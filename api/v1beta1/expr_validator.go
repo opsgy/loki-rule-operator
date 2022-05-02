@@ -14,18 +14,9 @@ func (lokiRule *GlobalLokiRule) ValidateExpressions() (*GlobalLokiRuleSpec, erro
 	specCopy := lokiRule.Spec.DeepCopy()
 	for _, group := range specCopy.Groups {
 		for _, rule := range group.Rules {
-			alertName := rule.Expr
-			if rule.Alert != "" {
-				alertName = rule.Alert
+			if err := rule.validate(lokiRule.Namespace, false); err != nil {
+				return nil, fmt.Errorf("validation error: %w", err)
 			}
-
-			// validate expression
-			expr, err := logql.ParseExpr(rule.Expr)
-			if err != nil {
-				return nil, fmt.Errorf("%s: %s", alertName, err.Error())
-			}
-
-			rule.Expr = expr.String()
 		}
 	}
 
@@ -37,25 +28,40 @@ func (lokiRule *LokiRule) ValidateExpressions() (*LokiRuleSpec, error) {
 	specCopy := lokiRule.Spec.DeepCopy()
 	for _, group := range specCopy.Groups {
 		for _, rule := range group.Rules {
-			alertName := rule.Expr
-			if rule.Alert != "" {
-				alertName = rule.Alert
+			if err := rule.validate(lokiRule.Namespace, true); err != nil {
+				return nil, fmt.Errorf("validation error: %w", err)
 			}
-
-			// validate expression
-			expr, err := logql.ParseExpr(rule.Expr)
-			if err != nil {
-				return nil, fmt.Errorf("%s: %s", alertName, err.Error())
-			}
-			if err := enforceNode(lokiRule.Namespace, expr); err != nil {
-				return nil, fmt.Errorf("%s: %s", alertName, err.Error())
-			}
-
-			rule.Expr = expr.String()
 		}
 	}
 
 	return specCopy, nil
+}
+
+func (lokiRule *LokiGroupRule) validate(namespace string, requireNamespace bool) error {
+	ruleName := lokiRule.Expr
+	if lokiRule.Alert != "" {
+		ruleName = lokiRule.Alert
+	}
+	if lokiRule.Record != "" {
+		ruleName = lokiRule.Record
+	}
+
+	if lokiRule.Alert == "" && lokiRule.Record == "" {
+		return fmt.Errorf("either 'alert' or 'record' field is requried in '%s' (%+v)", ruleName, lokiRule)
+	}
+
+	// validate expression
+	expr, err := logql.ParseExpr(lokiRule.Expr)
+	if err != nil {
+		return fmt.Errorf("cannot parse rule expression in '%s': %w", ruleName, err)
+	}
+	if requireNamespace {
+		if err := enforceNode(namespace, expr); err != nil {
+			return fmt.Errorf("wrong namespace in '%s': %w", ruleName, err)
+		}
+	}
+
+	return nil
 }
 
 // EnforceNode walks the given node recursively

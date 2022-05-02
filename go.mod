@@ -16,6 +16,3 @@ require (
 )
 
 replace k8s.io/client-go => k8s.io/client-go v0.19.4
-
-// Hack to use the latest version of loki
-replace github.com/grafana/loki v1.6.1 => ../../../../src/lib/github.com/grafana/loki
