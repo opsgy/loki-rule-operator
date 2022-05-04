@@ -60,6 +60,8 @@ spec:
                             additionalProperties:
                               type: string
                             type: object
+                          record:
+                            type: string
                         type: object
                       type: array
                   type: object

@@ -32,11 +32,12 @@ type LokiRuleGroup struct {
 }
 
 type LokiGroupRule struct {
-	Alert       string            `json:"alert,omitempty" yaml:"alert"`
+	Alert       string            `json:"alert,omitempty" yaml:"alert,omitempty"`
+	Record      string            `json:"record,omitempty" yaml:"record,omitempty"`
 	Expr        string            `json:"expr,omitempty" yaml:"expr"`
-	For         string            `json:"for,omitempty" yaml:"for"`
-	Annotations map[string]string `json:"annotations,omitempty" yaml:"annotations"`
-	Labels      map[string]string `json:"labels,omitempty" yaml:"labels"`
+	For         string            `json:"for,omitempty" yaml:"for,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty" yaml:"annotations,omitempty"`
+	Labels      map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 }
 
 // LokiRuleStatus defines the observed state of LokiRule
