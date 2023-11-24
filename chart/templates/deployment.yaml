@@ -41,7 +41,7 @@ spec:
         - -enable-webhook
         {{- end }}
         - -rules-configmap={{ .Values.loki.rulesConfigMap.namespace | default .Release.Namespace }}/{{ .Values.loki.rulesConfigMap.name }}
-        {{ if .Values.externalLabels }}
+        {{ if .Values.loki.externalLabels }}
         - -external-label={{ .Values.loki.externalLabels }}
         {{- end }}
 
