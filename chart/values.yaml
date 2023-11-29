@@ -48,6 +48,7 @@ loki:
   rulesConfigMap:
     name: loki-rules
     namespace: ""
+  externalLabels: ""
 
 admissionWebhooks:
   enabled: true
